@@ -139,7 +139,6 @@ See [IMPLEMENTATION_STAGES.md](docs/IMPLEMENTATION_STAGES.md) for the full roadm
 
 - [Architecture](docs/ARCHITECTURE.md) - System design and tradeoffs
 - [Implementation Stages](docs/IMPLEMENTATION_STAGES.md) - Detailed implementation plan
-- [Concurrency Design](docs/CONCURRENCY_DESIGN.md) - Threading and scaling patterns
 - [Types Design Notes](crates/types/DESIGN_NOTES.md) - Type system decisions
 
 ## Design Principles
