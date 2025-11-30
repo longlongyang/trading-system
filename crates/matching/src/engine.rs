@@ -108,10 +108,10 @@ impl MatchingEngine {
 
         // Dispatch based on time-in-force
         match order.time_in_force {
-            TimeInForce::GoodTilCancelled => self.place_gtc(book, order),
-            TimeInForce::ImmediateOrCancel => self.place_ioc(book, order),
-            TimeInForce::FillOrKill => self.place_fok(book, order),
-            TimeInForce::PostOnly => self.place_post_only(book, order),
+            TimeInForce::GoodTilCancelled => Self::place_gtc(book, order),
+            TimeInForce::ImmediateOrCancel => Self::place_ioc(book, order),
+            TimeInForce::FillOrKill => Self::place_fok(book, order),
+            TimeInForce::PostOnly => Self::place_post_only(book, order),
         }
     }
 
@@ -156,19 +156,19 @@ impl MatchingEngine {
     ///
     /// GTC orders match as much as possible against the book, then rest
     /// any remaining quantity.
-    fn place_gtc(&self, book: &mut OrderBook, mut order: Order) -> MatchResult {
+    fn place_gtc(book: &mut OrderBook, mut order: Order) -> MatchResult {
         let timestamp = order.created_at;
 
         // For market orders, treat as IOC
         if order.is_market() {
-            return self.place_ioc(book, order);
+            return Self::place_ioc(book, order);
         }
 
         // Try to match
         let match_result = matcher::match_order(book, &order, order.remaining_quantity, timestamp);
 
         // Apply fills to the book
-        self.apply_match_result(book, &match_result)?;
+        Self::apply_match_result(book, &match_result)?;
 
         // Calculate filled quantity
         let filled_quantity = order
@@ -208,20 +208,16 @@ impl MatchingEngine {
     ///
     /// IOC orders match as much as possible, then cancel any remainder.
     /// They never rest in the book.
-    fn place_ioc(&self, book: &mut OrderBook, mut order: Order) -> MatchResult {
+    fn place_ioc(book: &mut OrderBook, mut order: Order) -> MatchResult {
         let timestamp = order.created_at;
 
-        // Try to match (use max possible for market orders)
-        let max_qty = if order.is_market() {
-            order.remaining_quantity
-        } else {
-            order.remaining_quantity
-        };
+        // Try to match
+        let max_qty = order.remaining_quantity;
 
         let match_result = matcher::match_order(book, &order, max_qty, timestamp);
 
         // Apply fills to the book
-        self.apply_match_result(book, &match_result)?;
+        Self::apply_match_result(book, &match_result)?;
 
         // Calculate filled quantity
         let filled_quantity = order
@@ -261,7 +257,7 @@ impl MatchingEngine {
     ///
     /// FOK orders must be completely filled or they are rejected entirely.
     /// No partial fills, no resting.
-    fn place_fok(&self, book: &mut OrderBook, mut order: Order) -> MatchResult {
+    fn place_fok(book: &mut OrderBook, mut order: Order) -> MatchResult {
         let timestamp = order.created_at;
         let required_quantity = order.remaining_quantity;
 
@@ -296,7 +292,7 @@ impl MatchingEngine {
         }
 
         // Apply fills to the book
-        self.apply_match_result(book, &match_result)?;
+        Self::apply_match_result(book, &match_result)?;
 
         // Update order state
         order.remaining_quantity = Quantity::ZERO;
@@ -316,7 +312,7 @@ impl MatchingEngine {
     ///
     /// `PostOnly` orders are rejected if they would immediately match.
     /// They can only add liquidity (rest in the book).
-    fn place_post_only(&self, book: &mut OrderBook, order: Order) -> MatchResult {
+    fn place_post_only(book: &mut OrderBook, order: Order) -> MatchResult {
         let timestamp = order.created_at;
 
         // Market orders cannot be PostOnly
@@ -350,7 +346,6 @@ impl MatchingEngine {
     ///
     /// This updates or removes maker orders that were matched.
     fn apply_match_result(
-        &self,
         book: &mut OrderBook,
         result: &matcher::MatchResult,
     ) -> Result<(), MatchingError> {

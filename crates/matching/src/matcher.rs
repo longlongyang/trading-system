@@ -274,6 +274,7 @@ fn match_at_level(
 }
 
 #[cfg(test)]
+#[allow(clippy::cast_possible_truncation)]
 mod tests {
     use super::*;
     use types::{Address, MarketId, Nonce, TimeInForce};
@@ -575,7 +576,8 @@ mod tests {
         )
     }
 
-    /// Helper to create unique maker addresses that won't conflict with taker_address
+    /// Helper to create unique maker addresses that won't conflict with `taker_address`
+    #[allow(clippy::cast_possible_truncation)]
     fn unique_maker_address(i: u64) -> Address {
         // Use values starting from 10 to avoid conflict with taker_address ([2u8; 20])
         let mut bytes = [0u8; 20];
@@ -838,7 +840,7 @@ mod tests {
             &book,
             &buy_order,
             Quantity::from_whole(1000),
-            Timestamp::from_millis(1001000),
+            Timestamp::from_millis(1_001_000),
         );
 
         let elapsed = start.elapsed();
@@ -849,8 +851,7 @@ mod tests {
         // Should complete in under 50ms (very conservative)
         assert!(
             elapsed.as_millis() < 50,
-            "Matching 1000 orders took {:?}, expected < 50ms",
-            elapsed
+            "Matching 1000 orders took {elapsed:?}, expected < 50ms"
         );
     }
 
@@ -882,8 +883,7 @@ mod tests {
         // 100 iterations should complete in under 50ms
         assert!(
             elapsed.as_millis() < 50,
-            "100 available_quantity calls took {:?}, expected < 50ms",
-            elapsed
+            "100 available_quantity calls took {elapsed:?}, expected < 50ms"
         );
     }
 
@@ -928,8 +928,7 @@ mod tests {
         // 20000 checks should complete in under 50ms
         assert!(
             elapsed.as_millis() < 50,
-            "20000 would_cross checks took {:?}, expected < 50ms",
-            elapsed
+            "20000 would_cross checks took {elapsed:?}, expected < 50ms"
         );
     }
 

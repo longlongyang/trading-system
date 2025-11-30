@@ -13,7 +13,7 @@
 //!
 //! # Price Ordering
 //!
-//! We use `Reverse<Price>` for bids so that the BTreeMap's natural ordering
+//! We use `Reverse<Price>` for bids so that the `BTreeMap`'s natural ordering
 //! puts the highest price first (best bid). For asks, we use `Price` directly
 //! so the lowest price comes first (best ask).
 
@@ -31,7 +31,7 @@ use crate::price_level::PriceLevel;
 /// An order book for a single market.
 ///
 /// Maintains bids and asks organized by price level with FIFO ordering
-/// within each level. Also maintains a HashMap for O(1) order lookup.
+/// within each level. Also maintains a `HashMap` for O(1) order lookup.
 ///
 /// # Example
 ///
@@ -50,11 +50,11 @@ pub struct OrderBook {
     market_id: MarketId,
 
     /// Bid (buy) price levels, ordered by descending price.
-    /// Uses `Reverse<Price>` so BTreeMap iteration gives highest price first.
+    /// Uses `Reverse<Price>` so `BTreeMap` iteration gives highest price first.
     bids: BTreeMap<Reverse<Price>, PriceLevel>,
 
     /// Ask (sell) price levels, ordered by ascending price.
-    /// Natural BTreeMap order gives lowest price first.
+    /// Natural `BTreeMap` order gives lowest price first.
     asks: BTreeMap<Price, PriceLevel>,
 
     /// All orders indexed by ID for O(1) lookup.
@@ -144,12 +144,16 @@ impl OrderBook {
 
     /// Returns a mutable reference to the best bid price level.
     pub fn best_bid_level_mut(&mut self) -> Option<&mut PriceLevel> {
-        self.bids.first_entry().map(|e| e.into_mut())
+        self.bids
+            .first_entry()
+            .map(std::collections::btree_map::OccupiedEntry::into_mut)
     }
 
     /// Returns a mutable reference to the best ask price level.
     pub fn best_ask_level_mut(&mut self) -> Option<&mut PriceLevel> {
-        self.asks.first_entry().map(|e| e.into_mut())
+        self.asks
+            .first_entry()
+            .map(std::collections::btree_map::OccupiedEntry::into_mut)
     }
 
     /// Returns the spread (best ask - best bid), if both exist.

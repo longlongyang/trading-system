@@ -246,28 +246,28 @@ impl fmt::Display for EngineError {
 
             // Market
             Self::MarketNotFound { market_id } => {
-                write!(f, "market {} not found", market_id)
+                write!(f, "market {market_id} not found")
             }
             Self::MarketNotActive { market_id } => {
-                write!(f, "market {} is not active", market_id)
+                write!(f, "market {market_id} is not active")
             }
             Self::MarketHalted { market_id } => {
-                write!(f, "market {} is halted", market_id)
+                write!(f, "market {market_id} is halted")
             }
             Self::MarketClosed { market_id } => {
-                write!(f, "market {} is closed", market_id)
+                write!(f, "market {market_id} is closed")
             }
 
             // Order
             Self::OrderNotFound { order_id } => {
-                write!(f, "order {} not found", order_id)
+                write!(f, "order {order_id} not found")
             }
             Self::OrderNotActive { order_id } => {
-                write!(f, "order {} is not active", order_id)
+                write!(f, "order {order_id} is not active")
             }
             Self::NotOrderOwner => write!(f, "not the order owner"),
             Self::DuplicateOrderId { order_id } => {
-                write!(f, "duplicate order id {}", order_id)
+                write!(f, "duplicate order id {order_id}")
             }
 
             // Matching
@@ -277,8 +277,8 @@ impl fmt::Display for EngineError {
 
             // System
             Self::Overflow => write!(f, "arithmetic overflow"),
-            Self::InternalError { message } => write!(f, "internal error: {}", message),
-            Self::SerializationError { message } => write!(f, "serialization error: {}", message),
+            Self::InternalError { message } => write!(f, "internal error: {message}"),
+            Self::SerializationError { message } => write!(f, "serialization error: {message}"),
         }
     }
 }
@@ -397,15 +397,15 @@ mod tests {
 
     #[test]
     fn test_result_type_alias() {
-        fn returns_result() -> EngineResult<u32> {
-            Ok(42)
+        fn returns_result(fail: bool) -> EngineResult<u32> {
+            if fail {
+                Err(EngineError::InvalidQuantity)
+            } else {
+                Ok(42)
+            }
         }
 
-        fn returns_error() -> EngineResult<u32> {
-            Err(EngineError::InvalidQuantity)
-        }
-
-        assert_eq!(returns_result().unwrap(), 42);
-        assert!(returns_error().is_err());
+        assert_eq!(returns_result(false).unwrap(), 42);
+        assert!(returns_result(true).is_err());
     }
 }

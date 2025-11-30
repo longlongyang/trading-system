@@ -3,7 +3,7 @@
 //! This module defines the core order representation including:
 //! - [`OrderSide`]: Buy or Sell direction
 //! - [`OrderType`]: Limit or Market orders
-//! - [`TimeInForce`]: Order execution policies (GTC, IOC, FOK, PostOnly)
+//! - [`TimeInForce`]: Order execution policies (GTC, IOC, FOK, `PostOnly`)
 //! - [`Order`]: The complete order struct
 //! - [`OrderStatus`]: Current state of an order
 //!
@@ -152,6 +152,7 @@ impl fmt::Display for OrderType {
     PartialEq,
     Eq,
     Hash,
+    Default,
     Serialize,
     Deserialize,
     BorshSerialize,
@@ -161,6 +162,7 @@ impl fmt::Display for OrderType {
 #[repr(u8)]
 pub enum TimeInForce {
     /// Good-til-cancelled. Order remains open until filled or cancelled.
+    #[default]
     GoodTilCancelled = 0,
 
     /// Immediate-or-cancel. Execute immediately, cancel any unfilled portion.
@@ -182,7 +184,7 @@ impl TimeInForce {
 
     /// Returns `true` if this order can rest in the book.
     ///
-    /// GTC and PostOnly orders can rest; IOC and FOK cannot.
+    /// GTC and `PostOnly` orders can rest; IOC and FOK cannot.
     #[must_use]
     pub const fn can_rest(self) -> bool {
         matches!(self, Self::GoodTilCancelled | Self::PostOnly)
@@ -200,12 +202,6 @@ impl TimeInForce {
     #[must_use]
     pub const fn is_post_only(self) -> bool {
         matches!(self, Self::PostOnly)
-    }
-}
-
-impl Default for TimeInForce {
-    fn default() -> Self {
-        Self::GoodTilCancelled
     }
 }
 
@@ -322,7 +318,7 @@ impl fmt::Display for OrderStatus {
     Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, BorshSerialize, BorshDeserialize,
 )]
 pub struct Order {
-    /// Unique order identifier (encodes market_id and sequence).
+    /// Unique order identifier (encodes `market_id` and sequence).
     pub id: OrderId,
 
     /// Market this order is placed in.
@@ -362,6 +358,7 @@ pub struct Order {
 impl Order {
     /// Creates a new limit order.
     #[must_use]
+    #[allow(clippy::too_many_arguments)]
     pub const fn new_limit(
         id: OrderId,
         market_id: MarketId,
@@ -470,8 +467,10 @@ impl Order {
         }
         let filled = self.filled_quantity().as_scaled();
         let total = self.quantity.as_scaled();
-        // Safe because filled <= total, so ratio is in [0, 1]
-        ((filled * 100) / total) as u8
+        // Safe because filled <= total, so ratio is in [0, 100]
+        #[allow(clippy::cast_possible_truncation)]
+        let percentage = ((filled * 100) / total) as u8;
+        percentage
     }
 
     /// Applies a fill to this order, reducing remaining quantity.
@@ -840,7 +839,7 @@ mod tests {
                 Price::from_scaled(123 * SCALE),
                 Quantity::from_scaled(456 * SCALE),
                 Nonce::new(99),
-                Timestamp::from_millis(1700000000000),
+                Timestamp::from_millis(1_700_000_000_000),
             );
 
             let bytes = borsh::to_vec(&order).unwrap();

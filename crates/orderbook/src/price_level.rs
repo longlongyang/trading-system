@@ -1,7 +1,7 @@
 //! Price level implementation with FIFO order queue.
 //!
 //! A [`PriceLevel`] represents all orders at a single price point. Orders at
-//! the same price are stored in a FIFO queue (VecDeque) to maintain time priority.
+//! the same price are stored in a FIFO queue (`VecDeque`) to maintain time priority.
 
 use std::collections::VecDeque;
 
@@ -42,7 +42,7 @@ pub struct PriceLevel {
     /// Order IDs in FIFO order (front = oldest, back = newest).
     order_ids: VecDeque<OrderId>,
 
-    /// Quantity for each order (parallel to order_ids).
+    /// Quantity for each order (parallel to `order_ids`).
     /// We store quantities here for O(1) total quantity tracking.
     quantities: VecDeque<Quantity>,
 
@@ -192,7 +192,7 @@ impl PriceLevel {
         self.order_ids.iter().copied()
     }
 
-    /// Returns an iterator over (order_id, quantity) pairs at this level.
+    /// Returns an iterator over (`order_id`, quantity) pairs at this level.
     pub fn orders(&self) -> impl Iterator<Item = (OrderId, Quantity)> + '_ {
         self.order_ids
             .iter()

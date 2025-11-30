@@ -416,7 +416,7 @@ mod tests {
 
         #[test]
         fn test_borsh_roundtrip() {
-            let order = OrderId::new(MarketId::new(123), 456789);
+            let order = OrderId::new(MarketId::new(123), 456_789);
             let bytes = borsh::to_vec(&order).unwrap();
             let decoded: OrderId = borsh::from_slice(&bytes).unwrap();
             assert_eq!(order, decoded);

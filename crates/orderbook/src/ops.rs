@@ -2,7 +2,7 @@
 //!
 //! This module provides the core operations for manipulating the order book.
 //! The operations maintain consistency between the price level structures
-//! and the order HashMap.
+//! and the order `HashMap`.
 
 use std::cmp::Reverse;
 
@@ -161,7 +161,7 @@ impl OrderBook {
 impl OrderBook {
     /// Removes an order from the order book by its ID.
     ///
-    /// The order is removed from both the price level and the orders HashMap.
+    /// The order is removed from both the price level and the orders `HashMap`.
     /// If removing the order empties the price level, the level is removed.
     ///
     /// # Errors
@@ -806,7 +806,7 @@ mod tests {
         book.insert_order(make_buy_order(2, 105, 20)).unwrap();
         book.insert_order(make_buy_order(3, 95, 15)).unwrap();
 
-        let prices: Vec<Price> = book.bid_levels().map(|l| l.price()).collect();
+        let prices: Vec<Price> = book.bid_levels().map(PriceLevel::price).collect();
         assert_eq!(
             prices,
             vec![
@@ -825,7 +825,7 @@ mod tests {
         book.insert_order(make_sell_order(2, 105, 20)).unwrap();
         book.insert_order(make_sell_order(3, 95, 15)).unwrap();
 
-        let prices: Vec<Price> = book.ask_levels().map(|l| l.price()).collect();
+        let prices: Vec<Price> = book.ask_levels().map(PriceLevel::price).collect();
         assert_eq!(
             prices,
             vec![

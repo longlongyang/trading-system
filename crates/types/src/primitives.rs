@@ -751,15 +751,15 @@ mod tests {
 
         #[test]
         fn test_from_millis() {
-            let ts = Timestamp::from_millis(1700000000000);
-            assert_eq!(ts.as_millis(), 1700000000000);
+            let ts = Timestamp::from_millis(1_700_000_000_000);
+            assert_eq!(ts.as_millis(), 1_700_000_000_000);
         }
 
         #[test]
         fn test_from_secs() {
-            let ts = Timestamp::from_secs(1700000000);
-            assert_eq!(ts.as_secs(), 1700000000);
-            assert_eq!(ts.as_millis(), 1700000000000);
+            let ts = Timestamp::from_secs(1_700_000_000);
+            assert_eq!(ts.as_secs(), 1_700_000_000);
+            assert_eq!(ts.as_millis(), 1_700_000_000_000);
         }
 
         #[test]
@@ -781,7 +781,7 @@ mod tests {
 
         #[test]
         fn test_borsh_roundtrip() {
-            let ts = Timestamp::from_millis(1700000000000);
+            let ts = Timestamp::from_millis(1_700_000_000_000);
             let bytes = borsh::to_vec(&ts).unwrap();
             let decoded: Timestamp = borsh::from_slice(&bytes).unwrap();
             assert_eq!(ts, decoded);

@@ -59,6 +59,7 @@ pub struct MatchFill {
 impl MatchFill {
     /// Creates a new match fill.
     #[must_use]
+    #[allow(clippy::too_many_arguments)]
     pub const fn new(
         maker_order_id: OrderId,
         taker_order_id: OrderId,

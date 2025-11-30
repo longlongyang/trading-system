@@ -243,6 +243,8 @@ impl Account {
 
     /// Deposits tokens into the account.
     ///
+    /// # Errors
+    ///
     /// Returns `Err` if the operation would overflow.
     pub fn deposit(&mut self, token: Address, amount: Quantity) -> Result<(), AccountError> {
         let balance = self.get_balance(token);
@@ -254,6 +256,8 @@ impl Account {
     }
 
     /// Withdraws tokens from the account.
+    ///
+    /// # Errors
     ///
     /// Returns `Err` if insufficient available balance.
     pub fn withdraw(&mut self, token: Address, amount: Quantity) -> Result<(), AccountError> {
@@ -271,6 +275,8 @@ impl Account {
 
     /// Locks tokens for an order.
     ///
+    /// # Errors
+    ///
     /// Returns `Err` if insufficient available balance.
     pub fn lock(&mut self, token: Address, amount: Quantity) -> Result<(), AccountError> {
         let balance = self.get_balance(token);
@@ -283,6 +289,8 @@ impl Account {
 
     /// Unlocks tokens (order cancelled).
     ///
+    /// # Errors
+    ///
     /// Returns `Err` if insufficient locked balance.
     pub fn unlock(&mut self, token: Address, amount: Quantity) -> Result<(), AccountError> {
         let balance = self.get_balance(token);
@@ -294,6 +302,10 @@ impl Account {
     }
 
     /// Consumes locked tokens (order filled).
+    ///
+    /// # Errors
+    ///
+    /// Returns `Err` if insufficient locked balance.
     pub fn consume_locked(&mut self, token: Address, amount: Quantity) -> Result<(), AccountError> {
         let balance = self.get_balance(token);
         let new_balance = balance
@@ -308,6 +320,10 @@ impl Account {
     }
 
     /// Receives tokens (proceeds from a trade).
+    ///
+    /// # Errors
+    ///
+    /// Returns `Err` if the operation would overflow.
     pub fn receive(&mut self, token: Address, amount: Quantity) -> Result<(), AccountError> {
         self.deposit(token, amount)
     }

@@ -3,6 +3,10 @@
 //! Provides synthetic tests to measure throughput and latency of the
 //! matching engine under various scenarios.
 
+#![allow(clippy::uninlined_format_args)]
+#![allow(clippy::cast_precision_loss)]
+#![allow(clippy::cast_possible_truncation)]
+
 use std::time::{Duration, Instant};
 
 use matching::MatchingEngine;

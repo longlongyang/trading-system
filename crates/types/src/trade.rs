@@ -60,6 +60,7 @@ impl TradeId {
 
     /// Returns the sequence number component.
     #[must_use]
+    #[allow(clippy::cast_possible_truncation)]
     pub const fn sequence(self) -> u64 {
         self.0 as u64
     }
@@ -143,6 +144,7 @@ impl fmt::Display for FillRole {
 /// Fees are calculated based on the role and market configuration:
 /// - Makers typically receive a rebate (negative fee)
 /// - Takers pay a fee
+///
 /// Fees are always in the quote currency.
 #[derive(
     Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, BorshSerialize, BorshDeserialize,
@@ -300,7 +302,7 @@ pub struct Trade {
     /// Fee paid by or rebate received by the maker.
     pub maker_fee: Quantity,
 
-    /// Whether maker_fee is a rebate (true) or charge (false).
+    /// Whether `maker_fee` is a rebate (true) or charge (false).
     pub maker_is_rebate: bool,
 
     /// Fee paid by the taker.
@@ -572,7 +574,7 @@ mod tests {
 
             let display = format!("{fill}");
             assert!(display.contains("Maker"));
-            assert!(display.contains("-")); // Rebate shown as negative
+            assert!(display.contains('-')); // Rebate shown as negative
         }
 
         #[test]
@@ -588,7 +590,7 @@ mod tests {
                 Quantity::from_scaled(67890 * SCALE),
                 Quantity::from_scaled(123),
                 true,
-                Timestamp::from_millis(1700000000000),
+                Timestamp::from_millis(1_700_000_000_000),
             );
 
             let bytes = borsh::to_vec(&fill).unwrap();
@@ -614,7 +616,7 @@ mod tests {
                 Quantity::from_scaled(SCALE / 100), // 0.01 maker rebate
                 true,                               // is rebate
                 Quantity::from_scaled(SCALE / 10),  // 0.1 taker fee
-                Timestamp::from_millis(1700000000000),
+                Timestamp::from_millis(1_700_000_000_000),
             )
         }
 

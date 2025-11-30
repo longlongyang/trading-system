@@ -55,11 +55,13 @@ pub const DEFAULT_TAKER_FEE_BPS: i32 = 10;
     Deserialize,
     BorshSerialize,
     BorshDeserialize,
+    Default,
 )]
 #[borsh(use_discriminant = true)]
 #[repr(u8)]
 pub enum MarketStatus {
     /// Market is active and accepting orders.
+    #[default]
     Active = 0,
 
     /// Market is temporarily halted (no new orders, no matching).
@@ -95,12 +97,6 @@ impl MarketStatus {
     #[must_use]
     pub const fn is_closed(self) -> bool {
         matches!(self, Self::Closed)
-    }
-}
-
-impl Default for MarketStatus {
-    fn default() -> Self {
-        Self::Active
     }
 }
 
@@ -165,7 +161,7 @@ impl FeeConfig {
     #[must_use]
     pub fn calculate_maker_fee(self, notional: Quantity) -> (Quantity, bool) {
         let bps_abs = self.maker_fee_bps.unsigned_abs();
-        let fee = self.calculate_fee_amount(notional, bps_abs);
+        let fee = Self::calculate_fee_amount(notional, bps_abs);
         (fee, self.maker_fee_bps < 0)
     }
 
@@ -173,18 +169,15 @@ impl FeeConfig {
     #[must_use]
     pub fn calculate_taker_fee(self, notional: Quantity) -> Quantity {
         let bps_abs = self.taker_fee_bps.unsigned_abs();
-        self.calculate_fee_amount(notional, bps_abs)
+        Self::calculate_fee_amount(notional, bps_abs)
     }
 
     /// Helper to calculate fee from notional and basis points.
-    fn calculate_fee_amount(self, notional: Quantity, bps: u32) -> Quantity {
+    fn calculate_fee_amount(notional: Quantity, bps: u32) -> Quantity {
         // fee = notional * bps / 10000
         // We need to be careful about overflow
         let scaled = notional.as_scaled();
-        let fee_scaled = scaled
-            .checked_mul(bps as u128)
-            .map(|v| v / 10000)
-            .unwrap_or(0);
+        let fee_scaled = scaled.checked_mul(u128::from(bps)).map_or(0, |v| v / 10000);
         Quantity::from_scaled(fee_scaled)
     }
 }
@@ -359,7 +352,7 @@ impl MarketConfig {
         if self.tick_size.is_zero() {
             return true; // No tick constraint
         }
-        price.as_scaled() % self.tick_size.as_scaled() == 0
+        price.as_scaled().is_multiple_of(self.tick_size.as_scaled())
     }
 
     /// Validates that a quantity conforms to the lot size.
@@ -370,7 +363,9 @@ impl MarketConfig {
         if self.lot_size.is_zero() {
             return true; // No lot constraint
         }
-        quantity.as_scaled() % self.lot_size.as_scaled() == 0
+        quantity
+            .as_scaled()
+            .is_multiple_of(self.lot_size.as_scaled())
     }
 
     /// Rounds a price down to the nearest tick.

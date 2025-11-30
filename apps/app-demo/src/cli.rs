@@ -2,6 +2,12 @@
 //!
 //! Provides a simple command loop to place/cancel orders and view the book.
 
+#![allow(clippy::uninlined_format_args)]
+#![allow(clippy::needless_raw_string_hashes)]
+#![allow(clippy::single_match_else)]
+#![allow(clippy::map_unwrap_or)]
+#![allow(clippy::print_literal)]
+
 use std::io::{self, Write};
 
 use matching::{ExecutionReport, MatchFill, MatchOutcome, MatchingEngine};
