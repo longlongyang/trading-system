@@ -139,6 +139,8 @@ See [IMPLEMENTATION_STAGES.md](docs/IMPLEMENTATION_STAGES.md) for the full roadm
 
 - [Architecture](docs/ARCHITECTURE.md) - System design and tradeoffs
 - [Implementation Stages](docs/IMPLEMENTATION_STAGES.md) - Detailed implementation plan
+- [Concurrency Design](docs/CONCURRENCY_DESIGN.md) - Threading patterns and DashMap analysis
+- [Performance Profiling](docs/PERFORMANCE_PROFILING.md) - How to profile with perf and flamegraph
 - [Types Design Notes](crates/types/DESIGN_NOTES.md) - Type system decisions
 
 ## Design Principles

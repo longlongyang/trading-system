@@ -6,6 +6,7 @@
 
 - **[IMPLEMENTATION_STAGES.md](./IMPLEMENTATION_STAGES.md)** - Stage-by-stage implementation plan
 - **[CONCURRENCY_DESIGN.md](./CONCURRENCY_DESIGN.md)** - Concurrency patterns, DashMap analysis, and threading architecture
+- **[PERFORMANCE_PROFILING.md](./PERFORMANCE_PROFILING.md)** - How to profile with Linux perf and flamegraph
 
 ---
 
