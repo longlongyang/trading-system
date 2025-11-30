@@ -1,0 +1,23 @@
+[package]
+name = "app-demo"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+description = "Interactive demo and benchmark for the trading system"
+
+[[bin]]
+name = "demo"
+path = "src/main.rs"
+
+[dependencies]
+# Workspace crates
+types = { path = "../../crates/types" }
+orderbook = { path = "../../crates/orderbook" }
+matching = { path = "../../crates/matching" }
+
+[dev-dependencies]
+# None needed - tests use the main code
+
+[lints]
+workspace = true

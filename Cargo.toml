@@ -1,0 +1,37 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/types",
+    "crates/orderbook",
+    "crates/matching",
+    "apps/app-demo",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+repository = "https://github.com/your-org/tradingsystem"
+rust-version = "1.75"
+
+[workspace.dependencies]
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+borsh = { version = "1.5", features = ["derive"] }
+
+# Crypto (for Address type)
+hex = "0.4"
+
+# Error handling
+thiserror = "1.0"
+
+# Testing
+proptest = "1.4"
+
+[workspace.lints.rust]
+unsafe_code = "deny"
+missing_docs = "warn"
+
+[workspace.lints.clippy]
+all = "warn"
+pedantic = "warn"

@@ -1,0 +1,16 @@
+[package]
+name = "matching"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Matching engine core for the trading system"
+
+[dependencies]
+types = { path = "../types" }
+orderbook = { path = "../orderbook" }
+
+[dev-dependencies]
+proptest = { workspace = true }
+
+[lints]
+workspace = true

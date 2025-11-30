@@ -1,0 +1,41 @@
+# Rust / Cargo
+/target/
+**/*.rs.bk
+Cargo.lock
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+
+# Test coverage
+*.profraw
+*.profdata
+coverage/
+tarpaulin-report.html
+
+# Documentation build
+/doc/
+
+# Solidity / Foundry (for future stages)
+/contracts/out/
+/contracts/cache/
+/contracts/broadcast/
+
+# Node (for future tooling)
+node_modules/
